@@ -15,6 +15,10 @@ module ModPorter
       @original_filename = options[:filename]
       @content_type = options[:content_type]
     end
+
+    def to_tempfile
+      return File.new(self.path)
+    end
   end
   
   module ClassMethods
