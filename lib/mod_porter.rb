@@ -19,6 +19,10 @@ module ModPorter
     def to_tempfile
       return File.new(self.path)
     end
+
+    def size
+      File.size(self.path)
+    end
   end
   
   module ClassMethods
