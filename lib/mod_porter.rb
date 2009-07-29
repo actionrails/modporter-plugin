@@ -39,9 +39,10 @@ module ModPorter
     end
 
     def normalize_mod_porters
-      return if request.headers["X-Uploads"].blank?
+      x_uploads_header = request.headers["X-Uploads"] || request.headers["HTTP_X_UPLOADS"]
+      return if x_uploads_header.blank?
 
-      porter_params = request.headers["X-Uploads"].split(",").uniq
+      porter_params = x_uploads_header.split(",").uniq
       logger.info("Processing #{porter_params.inspect}")
 
       porter_params.each do |file_param|
