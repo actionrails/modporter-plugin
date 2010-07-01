@@ -1,4 +1,6 @@
 require 'strscan'
+require 'yaml'
+require 'active_support'
 
 module ModPorter
   class InvalidSignature < StandardError
@@ -36,6 +38,11 @@ module ModPorter
       base.superclass_delegating_accessor :mod_porter_secret
       base.before_filter :normalize_mod_porters
       base.extend ModPorter::ClassMethods
+    end
+    
+    def load_config
+      modporter_conf = YAML.load_file(File.join(RAILS_ROOT, 'config', 'modporter.yml'))
+      @modporter_conf = modporter_conf[RAILS_ENV].symbolize_keys
     end
 
     def normalize_mod_porters
@@ -88,7 +95,11 @@ module ModPorter
     end
 
     def check_signature!(options)
-      expected_digest = Digest::SHA1.digest("#{options[:path]}#{self.class.mod_porter_secret}")
+      
+      # Load the secret from config/modporter.yml file
+      load_config
+      
+      expected_digest = Digest::SHA1.digest("#{options[:path]}#{@modporter_conf[:secret]}")
       base64_encoded_digest = ActiveSupport::Base64.encode64(expected_digest).chomp
     
       if options[:signature] != base64_encoded_digest

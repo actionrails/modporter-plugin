@@ -1,0 +1,11 @@
+common: &common
+  secret: secret
+
+development:
+  <<: *common
+  
+staging:
+  <<: *common
+  
+production:
+  <<: *common
