@@ -16,6 +16,10 @@ module ModPorter
       @content_type = options[:content_type]
     end
 
+    def read
+      File.read(self.path)
+    end
+
     def to_tempfile
       return File.new(self.path)
     end
